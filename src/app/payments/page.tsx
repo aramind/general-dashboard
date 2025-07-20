@@ -1,6 +1,5 @@
-import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
-import { Payment } from "./columns";
+import { columns, Payment } from "./columns";
 import { DataTable } from "./data-table";
 const getData = async (): Promise<Payment[]> => {
   return [
@@ -258,25 +257,6 @@ const getData = async (): Promise<Payment[]> => {
     },
   ];
 };
-
-export const columns: ColumnDef<Payment>[] = [
-  {
-    accessorKey: "username",
-    header: "Email",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-];
 
 export default async function page() {
   const data = await getData();
