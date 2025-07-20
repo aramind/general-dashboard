@@ -1,5 +1,17 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+
 import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
 
 export type Payment = {
   id: string;
@@ -11,12 +23,60 @@ export type Payment = {
 
 export const columns: ColumnDef<Payment>[] = [
   {
+    id: "actions",
+    cell: ({ row }) => {
+      const payment = row.original;
+
+      return (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8">
+              <span className="sr-only">Open Menu</span>
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem
+              onClick={() => navigator.clipboard.writeText(payment.id)}
+            >
+              Copy Payment ID
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>View customer</DropdownMenuItem>
+            <DropdownMenuItem>View payment details</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      );
+    },
+  },
+  {
     accessorKey: "username",
     header: "Email",
   },
   {
     accessorKey: "email",
     header: "Email",
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => {
+      const status = row.getValue("status");
+
+      return (
+        <div
+          className={cn(
+            `p-1 px-2 rounded-md w-max text-xs`,
+            status === "pending" && "bg-yellow-500/40",
+            status === "success" && "bg-green-500/40",
+            status === "failed" && "bg-red-500/40"
+          )}
+        >
+          {status as string}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "amount",
@@ -30,9 +90,5 @@ export const columns: ColumnDef<Payment>[] = [
 
       return <div className="text-right font-medium">{formatted}</div>;
     },
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
   },
 ];
